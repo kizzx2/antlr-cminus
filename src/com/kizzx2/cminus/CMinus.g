@@ -8,10 +8,14 @@ options
 
 tokens
 {
+    PROGRAM;
     DEF;
     CALL;
     DEFUN;
     PARAMS;
+    DECLS;
+    FUNCS;
+    NEGATE;
 }
 
 @header
@@ -27,20 +31,22 @@ package com.kizzx2.cminus.parser;
 program
     : declaration*
       function*
-      EOF!
+      EOF
+    -> ^(PROGRAM ^(DECLS declaration*) ^(FUNCS function*))
     ;
     
 declaration
-    : type ID ';' -> ^(DEF type ID)
+    : TYPE ID ';' -> ^(DEF TYPE ID)
     ;
     
 function
-    : type ID LPAREN paramList? RPAREN
+    @init { System.out.println("got a function"); }
+    : TYPE ID LPAREN paramList? RPAREN
       OPEN_BRACE
       declaration*
       stmt*
       CLOSE_BRACE
-    -> ^(DEFUN type ID ^(PARAMS paramList?) declaration* stmt*)
+    -> ^(DEFUN TYPE ID ^(PARAMS paramList?) ^(DECLS declaration*) stmt*)
     ;
  
 stmt
@@ -74,7 +80,8 @@ term
     ;
     
 negationExpr
-    : ('-'^)? term
+    : '-' term -> ^(NEGATE term)
+    | term
     ;
     
 multDivExpr
@@ -85,12 +92,8 @@ addSubExpr
     : multDivExpr (('+'|'-')^ multDivExpr)?
     ;
     
-type
-    : 'int' | 'string'
-    ;
-    
 paramList
-    : type ID (COMMA type ID)* -> (type ID)+
+    : TYPE ID (COMMA TYPE ID)* -> ^(TYPE ID)+
     ;
 
 callList
@@ -101,6 +104,7 @@ fragment LETTER : 'a'..'z' | 'A'..'Z' ;
 fragment ENDL : '\r\n' | '\n' ;
 fragment DIGIT : '0'..'9' ;
 
+TYPE : 'int' | 'string' ;
 WS : (' ' | '\t' | '\n' | '\r\n')+ { $channel = HIDDEN; } ;
 COMMENT : '//' .* ENDL { $channel = HIDDEN; } ;
 ID : (LETTER | '_')(LETTER | '_' | DIGIT)* ;
