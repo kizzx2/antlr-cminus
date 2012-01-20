@@ -10,7 +10,7 @@ options
 
 @header
 {
-package com.kizzx2.cminus;  
+package com.kizzx2.cminus.nodes;
 import com.kizzx2.cminus.parser.*;
 
 import java.util.HashMap;

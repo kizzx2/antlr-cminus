@@ -1,14 +1,15 @@
-package com.kizzx2.cminus;
+package com.kizzx2.cminus.nodes;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class CMinusBuiltInFunctions
 {
-    static HashSet<String> bifs = new HashSet<String>()
-    {{
-        add("print");
-    }};
+    static HashSet<String> bifs = new HashSet<String>();
+    
+    static
+    {
+        bifs.add("print");
+    }
     
     public static boolean isBIF(String id)
     {

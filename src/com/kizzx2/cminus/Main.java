@@ -12,7 +12,7 @@ import com.kizzx2.cminus.nodes.CMinusValue;
 import com.kizzx2.cminus.parser.CMinusLexer;
 import com.kizzx2.cminus.parser.CMinusParser;
 
-public class Program
+public class Main
 {
     public static void main(String[] args) throws Exception
     {
@@ -23,6 +23,7 @@ public class Program
         
         System.out.println(tree.toStringTree());
         CMinusTree walker = new CMinusTree(new CommonTreeNodeStream(tree));
+        
         
         CMinusTree.program_return ast = walker.program();
         CMinusProgram realProgram = ast.rv;

@@ -1,4 +1,4 @@
-package com.kizzx2.cminus;
+package com.kizzx2.cminus.nodes;
 
 import java.util.HashMap;
 import java.util.Map;
