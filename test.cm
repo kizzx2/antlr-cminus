@@ -1,0 +1,28 @@
+int x;
+string name;
+
+int add(int a, int b)
+{
+    int x;
+    x = a + b;
+    return x;
+}
+
+int main()
+{
+    x = 10;
+    name = "chris";
+
+    print(name);
+    print(x);
+    print(add(add(3, 4), 5));
+
+    // should print 10
+    print(x);
+
+    x = -add(x, 0);
+    // should print -10
+    print(x);
+
+    return 0;
+}

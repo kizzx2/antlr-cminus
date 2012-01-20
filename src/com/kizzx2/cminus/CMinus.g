@@ -6,6 +6,14 @@ options
     output   = AST;
 }
 
+tokens
+{
+    DEF;
+    CALL;
+    DEFUN;
+    PARAMS;
+}
+
 @header
 {
 package com.kizzx2.cminus.parser;
@@ -19,11 +27,11 @@ package com.kizzx2.cminus.parser;
 program
     : declaration*
       function*
-      EOF
+      EOF!
     ;
     
 declaration
-    : type ID ';'
+    : type ID ';' -> ^(DEF type ID)
     ;
     
 function
@@ -32,20 +40,21 @@ function
       declaration*
       stmt*
       CLOSE_BRACE
+    -> ^(DEFUN type ID ^(PARAMS paramList?) declaration* stmt*)
     ;
  
 stmt
     : assignmentStmt
     | returnStmt
-    | expression SEMI
+    | expression SEMI!
     ;
     
 assignmentStmt
-    : ID '=' expression SEMI
+    : ID '='^ expression SEMI!
     ;
     
 returnStmt
-    : 'return' expression SEMI
+    : 'return'^ expression SEMI!
     ;
     
 expression
@@ -53,27 +62,27 @@ expression
     ;
     
 functionCall
-    : ID LPAREN callList? RPAREN
+    : ID LPAREN callList? RPAREN -> ^(CALL ID callList?)
     ;
     
 term
     : INT
     | STRING_LITERAL
     | functionCall
-    | LPAREN expression RPAREN
+    | LPAREN! expression RPAREN!
     | ID
     ;
     
 negationExpr
-    : '-'* term
+    : ('-'^)? term
     ;
     
 multDivExpr
-    : negationExpr (('*'|'/') negationExpr)?
+    : negationExpr (('*'|'/')^ negationExpr)?
     ;
 
 addSubExpr
-    : multDivExpr (('+'|'-') multDivExpr)?
+    : multDivExpr (('+'|'-')^ multDivExpr)?
     ;
     
 type
@@ -81,11 +90,11 @@ type
     ;
     
 paramList
-    : type ID (COMMA type ID)*
+    : type ID (COMMA type ID)* -> (type ID)+
     ;
 
 callList
-    : expression (COMMA expression)*
+    : expression (COMMA expression)* -> expression+
     ;
 
 fragment LETTER : 'a'..'z' | 'A'..'Z' ;
@@ -102,5 +111,6 @@ RPAREN : ')' ;
 OPEN_BRACE : '{' ;
 CLOSE_BRACE : '}' ;
 STRING_LITERAL : '"' ~('"' | '\\"' )* '"' ;
+
 
 INT : '0' | ('1'..'9') DIGIT* ;
