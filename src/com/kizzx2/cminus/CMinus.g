@@ -40,7 +40,6 @@ declaration
     ;
     
 function
-    @init { System.out.println("got a function"); }
     : TYPE ID LPAREN paramList? RPAREN
       OPEN_BRACE
       declaration*
